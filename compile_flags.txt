@@ -1,0 +1,5 @@
+-std=c++2a
+-Ideps/SDL/include
+-Ideps/fmt/include
+-Ideps/doctest
+-Iinclude
