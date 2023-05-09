@@ -3,9 +3,10 @@
 #include "enums.hh"
 #include "inference_engine.hh"
 
-#include <array>
 #include <fstream>
 #include <sstream>
+#include <stack>
+#include <string>
 #include <unordered_set>
 
 ENUM_MAP(OperatorPrecedence, Biconditional, Implication, Disjunction, Conjunction, Negation);
