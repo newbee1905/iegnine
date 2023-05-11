@@ -9,8 +9,6 @@
 #include <string>
 #include <unordered_set>
 
-ENUM_MAP(OperatorPrecedence, Biconditional, Implication, Disjunction, Conjunction, Negation);
-
 namespace ie {
 std::vector<std::string> split_expression(const std::string &expression) {
 	std::vector<std::string> tokens;
@@ -32,21 +30,18 @@ std::vector<std::string> split_expression(const std::string &expression) {
 			operators.push(token);
 			break;
 		case ')':
-			for (; !operators.empty() && operators.top() != "(";
-			     tokens.push_back(operators.top()), operators.pop())
-				;
-
-			if (operators.empty() || operators.top() == "(") {
-				// TODO: Handle the error later
-				fmt::print("Error: Unmatched parentheses\n");
+			while (!operators.empty() && operators.top() != "(") {
+				tokens.emplace_back(operators.top());
+				operators.pop();
 			}
 
 			operators.pop();
 			break;
 			// the operators
 		case ';':
-			for (; !operators.empty(); tokens.push_back(operators.top()), operators.pop())
+			for (; !operators.empty(); tokens.emplace_back(operators.top()), operators.pop())
 				;
+			tokens.emplace_back(token);
 			break;
 		case '~':
 		case '&':
@@ -54,20 +49,21 @@ std::vector<std::string> split_expression(const std::string &expression) {
 		case '=': // =>
 		case '<': // <=>
 			// push all higher piority operators to the tokens
-			for (; !operators.empty() && precdence[token] <= precdence[operators.top()];
-			     tokens.push_back(operators.top()), operators.pop())
-				;
+			while (!operators.empty() && precdence[token] <= precdence[operators.top()]) {
+				tokens.emplace_back(operators.top());
+				operators.pop();
+			}
 			operators.push(token);
 			break;
 		default:
-			tokens.push_back(token);
+			tokens.emplace_back(token);
 			break;
 		}
 	}
 
 	// TODO: Has not parsed the situation where the format is wrong
 	// with a non-closed )
-	for (; !operators.empty(); tokens.push_back(operators.top()), operators.pop())
+	for (; !operators.empty(); tokens.emplace_back(operators.top()), operators.pop())
 		;
 
 	return tokens;

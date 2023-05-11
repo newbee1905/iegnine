@@ -5,6 +5,8 @@
 #ifndef UTILS_HH
 #define UTILS_HH
 
+#include "fmt/core.h"
+
 #include <algorithm>
 #include <array>
 #include <cctype>
@@ -112,8 +114,9 @@ template <typename key, typename val, std::size_t size> struct map {
 				std::find_if(std::begin(data), std::end(data), [&k](const auto &v) { return v.fst == k; });
 		if (itr != end(data))
 			return itr->sec;
-		else
-			throw std::range_error("Not Found");
+		else {
+			throw std::range_error(fmt::format("`{}` Not Found", k));
+		}
 	}
 
 	[[nodiscard]] constexpr val operator[](const key &k) const { return at(k); }

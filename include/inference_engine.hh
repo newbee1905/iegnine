@@ -9,13 +9,15 @@
 
 namespace ie {
 const std::regex IE_REGEX("([&~)(]|[;\\n]|[|=][|>]|<=>)|\\w+");
-constexpr ie::map<std::string_view, std::int8_t, 6> precdence{
-		ie::pair<std::string_view, std::int8_t>{  ";", 4},
-		ie::pair<std::string_view, std::int8_t>{  "~", 3},
-		ie::pair<std::string_view, std::int8_t>{  "&", 2},
-		ie::pair<std::string_view, std::int8_t>{ "||", 1},
-		ie::pair<std::string_view, std::int8_t>{ "=>", 0},
-		ie::pair<std::string_view, std::int8_t>{"<=>", 0},
+constexpr ie::map<std::string_view, std::int8_t, 8> precdence{
+		ie::pair<std::string_view, std::int8_t>{  ";",  5},
+		ie::pair<std::string_view, std::int8_t>{  "~",  3},
+		ie::pair<std::string_view, std::int8_t>{  "&",  2},
+		ie::pair<std::string_view, std::int8_t>{ "||",  1},
+		ie::pair<std::string_view, std::int8_t>{ "=>",  0},
+		ie::pair<std::string_view, std::int8_t>{"<=>",  0},
+		ie::pair<std::string_view, std::int8_t>{  ")", -1},
+		ie::pair<std::string_view, std::int8_t>{  "(", -1},
 };
 
 constexpr bool is_operator(char c) {

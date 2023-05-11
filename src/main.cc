@@ -15,22 +15,22 @@ int main(int argc, char *argv[]) {
 	std::string filename = argv[1];
 
 	std::ifstream input_file(filename);
-	std::vector<std::string> tokens;
-	bool ask_section = false;
+	std::vector<std::string> tell_tokens;
+	bool tell_section = false;
 
 	for (std::string line; getline(input_file, line);) {
 		if (line == "TELL") {
-			ask_section = true;
-		} else if (ask_section) {
+			tell_section = true;
+		} else if (tell_section) {
 			fmt::println("{}", line);
-			tokens = ie::split_expression(line);
-			break;
+			tell_tokens  = ie::split_expression(line);
+			tell_section = false;
 		}
 	}
 
 	input_file.close();
 
-	for (const auto &token : tokens) {
+	for (const auto &token : tell_tokens) {
 		if (ie::is_operator(token[0])) {
 			fmt::println("Opeartor: {}", token);
 		} else {
