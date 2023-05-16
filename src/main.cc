@@ -14,28 +14,30 @@ int main(int argc, char *argv[]) {
 
 	std::string filename = argv[1];
 
+	ie::IEngine tell_engine;
+	ie::IEngine ask_engine;
+
 	std::ifstream input_file(filename);
 	std::vector<std::string> tell_tokens;
-	bool tell_section = false;
 
+	int mode = 0;
 	for (std::string line; getline(input_file, line);) {
-		if (line == "TELL") {
-			tell_section = true;
-		} else if (tell_section) {
-			fmt::println("{}", line);
-			tell_tokens  = ie::split_expression(line);
-			tell_section = false;
+		if (line == "TELL" || line == "ASK") {
+			mode++;
+			continue;
+		}
+		fmt::println("{}", line);
+		switch (mode) {
+		case 1:
+			tell_engine.split_expression(line);
+			break;
+		case 2:
+			ask_engine.split_expression(line);
+			break;
 		}
 	}
 
 	input_file.close();
 
-	for (const auto &token : tell_tokens) {
-		if (ie::is_operator(token[0])) {
-			fmt::println("Opeartor: {}", token);
-		} else {
-			fmt::println("Identifier: {}", token);
-		}
-	}
 	return 0;
 }

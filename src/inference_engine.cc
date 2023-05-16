@@ -10,16 +10,15 @@
 #include <unordered_set>
 
 namespace ie {
-std::vector<std::string> split_expression(const std::string &expression) {
-	std::vector<std::string> tokens;
+void IEngine::split_expression(const std::string &expression) {
 	std::stack<std::string> operators;
 	std::sregex_token_iterator it(expression.begin(), expression.end(), IE_REGEX);
 	std::sregex_token_iterator end;
 
 	fmt::println("Dist {}", std::distance(it, end));
-	tokens.reserve(std::distance(it, end)); // Reserve space for tokens
+	m_tokens.reserve(std::distance(it, end)); // Reserve space for m_tokens
 
-	// shunting yard algorithm for parsing tokens
+	// shunting yard algorithm for parsing m_tokens
 	// and order them to the correct order of the
 	// piority of functions and () brackets
 	for (std::string token; it != end; ++it) {
@@ -31,7 +30,7 @@ std::vector<std::string> split_expression(const std::string &expression) {
 			break;
 		case ')':
 			while (!operators.empty() && operators.top() != "(") {
-				tokens.emplace_back(operators.top());
+				m_tokens.emplace_back(operators.top());
 				operators.pop();
 			}
 
@@ -39,33 +38,31 @@ std::vector<std::string> split_expression(const std::string &expression) {
 			break;
 			// the operators
 		case ';':
-			for (; !operators.empty(); tokens.emplace_back(operators.top()), operators.pop())
+			for (; !operators.empty(); m_tokens.emplace_back(operators.top()), operators.pop())
 				;
-			tokens.emplace_back(token);
+			m_tokens.emplace_back(token);
 			break;
 		case '~':
 		case '&':
 		case '|': // ||
 		case '=': // =>
 		case '<': // <=>
-			// push all higher piority operators to the tokens
+			// push all higher piority operators to the m_tokens
 			while (!operators.empty() && precdence[token] <= precdence[operators.top()]) {
-				tokens.emplace_back(operators.top());
+				m_tokens.emplace_back(operators.top());
 				operators.pop();
 			}
 			operators.push(token);
 			break;
 		default:
-			tokens.emplace_back(token);
+			m_tokens.emplace_back(token);
 			break;
 		}
 	}
 
 	// TODO: Has not parsed the situation where the format is wrong
 	// with a non-closed )
-	for (; !operators.empty(); tokens.emplace_back(operators.top()), operators.pop())
+	for (; !operators.empty(); m_tokens.emplace_back(operators.top()), operators.pop())
 		;
-
-	return tokens;
 }
 } // namespace ie

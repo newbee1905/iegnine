@@ -26,7 +26,8 @@ if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2 /Ox /GL /fp:strict /MT")
 	add_compile_options(/Zc:__cplusplus) # see https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus?view=msvc-160 for detail
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_REENTRANT -mavx2 -mbmi2 -Ofast -flto")
+	# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_REENTRANT -mavx2 -mbmi2 -Ofast -flto")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
