@@ -1,0 +1,4 @@
+TELL
+p3=>p4;p1
+ASK
+p1&p3
