@@ -14,27 +14,47 @@ std::vector<std::string> m_tokens{};
 std::unordered_map<std::string, std::unordered_set<std::string>> implications;
 std::unordered_set<std::string> queue;
 
-void FCIEngine::split_expression(const std::string &expression) {
-	std::regex delimiter(";");
-	std::sregex_token_iterator it(expression.begin(), expression.end(), delimiter, -1);
-	std::sregex_token_iterator end;
+void FCIEngine::solve(const std::string &filename) {
+	//readin input from file
+	std::ifstream input_file(filename);
 
-	// Store the tokens in the m_tokens vector
-	m_tokens.clear();
-	while (it != end) {
-		std::string token = *it;
-		token.erase(std::remove_if(token.begin(), token.end(), ::isspace),
-		            token.end()); // Remove spaces
-		m_tokens.push_back(token);
-		++it;
+	int mode = 0;
+	for (std::string line; getline(input_file, line);) {
+		if (line == "TELL" || line == "ASK") {
+			mode++;
+			continue;
+		}
+		fmt::println("{}", line);
+		switch (mode) {
+		case 1:
+			add_implication(line);
+			break;
+		case 2:
+			add_queue(line);
+			break;
+		}
 	}
 
-	// Print the tokens
-	for (const auto &token : m_tokens) {
-		fmt::println("{}", token);
-	}
+	input_file.close();
+	
+	//std::regex delimiter(";");
+	//std::sregex_token_iterator it(expression.begin(), expression.end(), delimiter, -1);
+	//std::sregex_token_iterator end;
 
-	//inputting the implications
+	//// Store the tokens in the m_tokens vector
+	//m_tokens.clear();
+	//while (it != end) {
+	//	std::string token = *it;
+	//	token.erase(std::remove_if(token.begin(), token.end(), ::isspace),
+	//	            token.end()); // Remove spaces
+	//	m_tokens.push_back(token);
+	//	++it;
+	//}
+
+	//// Print the tokens
+	//for (const auto &token : m_tokens) {
+	//	fmt::println("{}", token);
+	//}
 }
 
 void FCIEngine::add_implication(const std::string &implication) {

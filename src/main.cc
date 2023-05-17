@@ -15,35 +15,9 @@ int main(int argc, char *argv[]) {
 
 	std::string filename = argv[1];
 
-	//Truth Table
-	//ie::IEngine tell_engine;
-	//ie::IEngine ask_engine;
-
 	//FC
-	ie::FCIEngine tell_engine;
-	ie::FCIEngine ask_engine;
-
-	std::ifstream input_file(filename);
-	std::vector<std::string> tell_tokens;
-
-	int mode = 0;
-	for (std::string line; getline(input_file, line);) {
-		if (line == "TELL" || line == "ASK") {
-			mode++;
-			continue;
-		}
-		fmt::println("{}", line);
-		switch (mode) {
-		case 1:
-			tell_engine.split_expression(line);
-			break;
-		case 2:
-			ask_engine.split_expression(line);
-			break;
-		}
-	}
-
-	input_file.close();
+	ie::FCIEngine engine;
+	engine.solve(filename);
 
 	return 0;
 }
