@@ -10,6 +10,10 @@
 #include <unordered_set>
 
 namespace ie {
+std::vector<std::string> m_tokens{};
+/* std::unordered_map<std::string, bool> tt{}; */
+std::unordered_map<std::string, std::function<bool()>> tt{};
+
 void IEngine::split_expression(const std::string &expression) {
 	std::stack<std::string> operators;
 	std::sregex_token_iterator it(expression.begin(), expression.end(), IE_REGEX);
@@ -40,7 +44,7 @@ void IEngine::split_expression(const std::string &expression) {
 		case ';':
 			for (; !operators.empty(); m_tokens.emplace_back(operators.top()), operators.pop())
 				;
-			m_tokens.emplace_back(token);
+			m_tokens.emplace_back("&");
 			break;
 		case '~':
 		case '&':
