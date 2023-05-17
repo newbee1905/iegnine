@@ -2,6 +2,7 @@
 
 #include "fmt/ostream.h"
 #include "inference_engine.hh"
+#include "FCIEngine.hh"
 
 #include <fstream>
 #include <iostream>
@@ -14,8 +15,13 @@ int main(int argc, char *argv[]) {
 
 	std::string filename = argv[1];
 
-	ie::IEngine tell_engine;
-	ie::IEngine ask_engine;
+	//Truth Table
+	//ie::IEngine tell_engine;
+	//ie::IEngine ask_engine;
+
+	//FC
+	ie::FCIEngine tell_engine;
+	ie::FCIEngine ask_engine;
 
 	std::ifstream input_file(filename);
 	std::vector<std::string> tell_tokens;
