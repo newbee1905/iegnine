@@ -30,10 +30,10 @@ public:
 	static constexpr ie::map<std::string_view, std::int8_t, 8> precdence{
 			ie::pair<std::string_view, std::int8_t>{  ";",  5},
 			ie::pair<std::string_view, std::int8_t>{  "~",  3},
-			ie::pair<std::string_view, std::int8_t>{  "&",  1},
-			ie::pair<std::string_view, std::int8_t>{ "||",  1},
-			ie::pair<std::string_view, std::int8_t>{ "=>",  2},
-			ie::pair<std::string_view, std::int8_t>{"<=>",  2},
+			ie::pair<std::string_view, std::int8_t>{  "&",  2},
+			ie::pair<std::string_view, std::int8_t>{ "||",  2},
+			ie::pair<std::string_view, std::int8_t>{ "=>",  1},
+			ie::pair<std::string_view, std::int8_t>{"<=>",  1},
 			ie::pair<std::string_view, std::int8_t>{  ")", -1},
 			ie::pair<std::string_view, std::int8_t>{  "(", -1},
 	};
