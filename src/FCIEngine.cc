@@ -14,7 +14,7 @@ std::string delimiter = ";";
 std::unordered_map<std::string, std::vector<std::string>> implications;
 std::unordered_set<std::string> queue;
 
-std::vector<std::string> split_string(std::string &input, char delimiter) {
+std::vector<std::string> FCIEngine::split_string(std::string &input, char delimiter) {
 	std::vector<std::string> tokens;
 	std::string token;
 
@@ -78,24 +78,6 @@ void FCIEngine::solve(const std::string &filename) {
 		}
 		kb_str.erase(0, pos + delimiter.length());
 	}
-
-	//// Print all elements in implications
-	//for (const auto &entry : implications) {
-	//	int i = 0;
-	//	for (const auto &value : entry.second) {
-	//		if (i != 0) {
-	//			fmt::print("&");
-	//		}
-	//		fmt::print("{}", value);
-	//		i++;
-	//	}
-	//	fmt::print("=>{}\n", entry.first);
-	//}
-
-	//// Print all elements in queue/facts
-	//for (const auto &element : queue) {
-	//	fmt::print("{}\n", element);
-	//}
 	
 	entailment_check(implications, queue, query_str);
 }

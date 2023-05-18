@@ -15,7 +15,8 @@ private:
 	std::string delimiter = ";";
 
 public:
-	void solve(const std::string &expression);
+	std::vector<std::string> split_string(std::string &input, char delimiter);
+	void solve(const std::string &filename);
 	void entailment_check(std::unordered_map<std::string, std::vector<std::string>> &KB,
 	                 const std::unordered_set<std::string> &facts, const std::string &query);
 
