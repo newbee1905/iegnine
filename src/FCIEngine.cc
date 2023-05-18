@@ -79,65 +79,88 @@ void FCIEngine::solve(const std::string &filename) {
 		kb_str.erase(0, pos + delimiter.length());
 	}
 
-	// Print all elements in implications
-	for (const auto &entry : implications) {
-		int i = 0;
-		for (const auto &value : entry.second) {
-			if (i != 0) {
-				fmt::print("&");
-			}
-			fmt::print("{}", value);
-			i++;
-		}
-		fmt::print("=>{}\n", entry.first);
-	}
+	//// Print all elements in implications
+	//for (const auto &entry : implications) {
+	//	int i = 0;
+	//	for (const auto &value : entry.second) {
+	//		if (i != 0) {
+	//			fmt::print("&");
+	//		}
+	//		fmt::print("{}", value);
+	//		i++;
+	//	}
+	//	fmt::print("=>{}\n", entry.first);
+	//}
 
-	// Print all elements in queue/facts
-	for (const auto &element : queue) {
-		fmt::print("{}\n", element);
-	}
+	//// Print all elements in queue/facts
+	//for (const auto &element : queue) {
+	//	fmt::print("{}\n", element);
+	//}
 	
-	is_entailed(implications, queue, query_str);
+	entailment_check(implications, queue, query_str);
 }
 
-bool FCIEngine::is_entailed(const std::unordered_map<std::string, std::vector<std::string>> &KB,
+void FCIEngine::entailment_check(std::unordered_map<std::string, std::vector<std::string>> &KB,
                  const std::unordered_set<std::string> &facts, const std::string &query) {
 	std::unordered_set<std::string> inferred_facts = facts;
 
+	bool result = false;
+
 	while (true) {
+		// is the query already a fact?
+		result = inferred_facts.find(query) != inferred_facts.end();
+		if (result) {
+			fmt::print("YES\n");
+			for (const auto &element : inferred_facts) {
+				fmt::print("{} ", element);
+			}
+			return;
+		}
+
 		bool new_fact_inferred = false;
 
-		for (const auto &rule : KB) {
-			const std::vector<std::string> &premises = rule.second;
-			const std::string &conclusion            = rule.first;
+		//checking each fact in the fact queue
+		for (const auto &currentFact : inferred_facts) {
+			//check each sentence in KB
+			for (auto &sentence : KB) {
+				std::vector<std::string> &leftSide = sentence.second;
+				const std::string &rightSide       = sentence.first;
 
-			bool all_premises_satisfied = true;
-			for (const auto &premise : premises) {
-				if (inferred_facts.find(premise) == inferred_facts.end()) {
-					all_premises_satisfied = false;
-					break;
+				//if leftside is cleared, skip this sentence
+				if (leftSide.size() == 0)
+					continue;
+
+				//find current fact symbol in the left side
+				auto it = std::find(leftSide.begin(), leftSide.end(), currentFact);
+				//if found, erase from left side to keep track of undetermined symbols
+				if (it != leftSide.end()) {
+					leftSide.erase(it);
+				}
+
+				// if leftside is cleared, add right side to fact queue
+				if (leftSide.size() == 0) {
+					// only add new inferred fact if it is actually new
+					//(not already in list of inferred facts)
+					if (inferred_facts.find(rightSide) == inferred_facts.end()) {
+						inferred_facts.insert(rightSide);
+						new_fact_inferred = true;
+						break;
+					}
 				}
 			}
-
-			if (all_premises_satisfied && inferred_facts.find(conclusion) == inferred_facts.end()) {
-				inferred_facts.insert(conclusion);
-				new_fact_inferred = true;
-			}
+			if (new_fact_inferred)
+				break;
 		}
 
-		if (!new_fact_inferred) {
+		if (!new_fact_inferred)
 			break;
-		}
 	}
 
-	bool result = inferred_facts.find(query) != inferred_facts.end();
-	if (result)
-		fmt::print("YES\n");
-	else
-		fmt::print("NO\n");
+	fmt::print("NO\n");
 	for (const auto &element : inferred_facts) {
 		fmt::print("{} ", element);
 	}
-	return result;
+
+	return;
 }
 } // namespace ie

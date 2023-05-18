@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <algorithm>
 
 #include "utils.hh"
 
@@ -15,7 +16,7 @@ private:
 
 public:
 	void solve(const std::string &expression);
-	bool is_entailed(const std::unordered_map<std::string, std::vector<std::string>> &KB,
+	void entailment_check(std::unordered_map<std::string, std::vector<std::string>> &KB,
 	                 const std::unordered_set<std::string> &facts, const std::string &query);
 
 public:
