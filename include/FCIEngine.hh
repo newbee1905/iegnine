@@ -1,26 +1,26 @@
+#ifndef FC_IENGINE_HH
+#define FC_IENGINE_HH
+
+#include <algorithm>
 #include <functional>
 #include <regex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <algorithm>
 
+#include "iengine.hh"
 #include "utils.hh"
 
 namespace ie {
-
-class FCIEngine {
-private:
-	std::string delimiter = ";";
-
+class FCIEngine : public HornIEngine {
 public:
-	std::vector<std::string> split_string(std::string &input, char delimiter);
-	void solve(const std::string &filename);
-	void entailment_check(std::unordered_map<std::string, std::vector<std::string>> &KB,
-	                 const std::unordered_set<std::string> &facts, const std::string &query);
-
-public:
-
+	bool parse() override;
+	bool solve() override;
+	bool entailment_check() override;
+	void result_output() override;
 };
+
 } // namespace ie
+
+#endif // FCIENGINE_HH
