@@ -1,20 +1,30 @@
+#ifndef BC_IENGINE_HH
+#define BC_IENGINE_HH
+
+#include <algorithm>
 #include <functional>
 #include <regex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <algorithm>
 
+#include "iengine.hh"
 #include "utils.hh"
 
-class BCIEngine {
+namespace ie {
+class BCIEngine : public HornIEngine {
 private:
-	std::string delimiter = ";";
+	std::unordered_set<std::string> m_visited;
+	std::unordered_set<std::string> m_required_facts;
 
 public:
-	void solve(const std::string &filename);
-	bool entailment_check(const std::string &query, std::unordered_set<std::string> &visited);
-
-public:
+	bool parse() override;
+	bool solve() override;
+	bool entailment_check() override;
+	bool _entailment_check(std::string symbol);
+	void result_output() override;
 };
+} // namespace ie
+
+#endif // BC_IENGINE_HH
