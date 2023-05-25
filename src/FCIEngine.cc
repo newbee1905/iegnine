@@ -90,6 +90,8 @@ bool FCIEngine::entailment_check() {
 						break;
 					}
 				}
+				if (new_fact_inferred)
+					break;
 			}
 			if (new_fact_inferred)
 				break;

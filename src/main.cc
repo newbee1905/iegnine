@@ -22,9 +22,11 @@ int main(int argc, char *argv[]) {
 	switch (argv[2][0]) {
 	case 'F':
 		e = std::make_unique<ie::FCIEngine>();
+		fmt::println("FC:");
 		break;
 	case 'B':
 		e = std::make_unique<ie::BCIEngine>();
+		fmt::println("BC:");
 		break;
 	default:
 		fmt::println(stderr, "This method does not exist or not supported yet.");
