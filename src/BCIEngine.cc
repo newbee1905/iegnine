@@ -35,13 +35,13 @@ bool BCIEngine::parse() {
 			break;
 		case ';':
 			if ((literals.size() + mode) == 1)
-				m_inferred_facts.insert(literals[0]);
+				m_inferred_facts.push_back(literals[0]);
 			literals.clear();
 			mode = 0;
 			break;
 		default:
 			if (mode)
-				m_kb[token] = literals;
+				m_kb[token].push_back(literals);
 			else
 				literals.push_back(token);
 			break;
@@ -56,8 +56,12 @@ bool BCIEngine::entailment_check() { return _entailment_check(m_query_str); }
 
 bool BCIEngine::_entailment_check(std::string query) {
 	// check if current query is a known fact
-	if (m_inferred_facts.find(query) != m_inferred_facts.end()) {
-		m_required_facts.insert(query);
+	if (std::find(m_inferred_facts.begin(), m_inferred_facts.end(), query) !=
+	    m_inferred_facts.end()) {
+		if (std::find(m_required_facts.begin(), m_required_facts.end(), query) ==
+		    m_required_facts.end()) {
+			m_required_facts.push_back(query);
+		}
 		return true;
 	}
 
@@ -70,23 +74,39 @@ bool BCIEngine::_entailment_check(std::string query) {
 	m_visited.insert(query);
 
 	// check each sentence in KB
-	for (auto &[right_side, left_side] : m_kb) {
+	for (auto &[right_side, left_sides] : m_kb) {
 		// if found query on right side, start the recursion check on left side
 		if (query == right_side) {
-			bool is_left_side = true;
+			bool is_left_side = false;
 
-			// Check if all the premises of the rule are true
-			for (const auto &symbol : left_side) {
-				if (!_entailment_check(symbol)) {
-					is_left_side = false;
+			//check each leftsides
+			for (const auto &left_side : left_sides) {
+				is_left_side = false;
+
+				// Check if all the premises of the left side are true
+				for (const auto &symbol : left_side) {
+					// if true, keep going until last symbol/premise
+					// if just one symbol/premise is false, mark as false
+					//and skip this leftside(sentence)
+					if (_entailment_check(symbol)) {
+						is_left_side = true;
+					} else {
+						is_left_side = false;
+						break;
+					}
+				}
+
+				//if just one left side is proven, this current right side will be a fact
+				//break the loop since already proven, no need to keep searching
+				if (is_left_side) {
 					break;
 				}
 			}
 
-			// If all symbols on the left are true, mark the query as fact
+			// if just one left side is proven, this current query will be a fact
 			if (is_left_side) {
-				m_inferred_facts.insert(query);
-				m_required_facts.insert(query);
+				m_inferred_facts.push_back(query);
+				m_required_facts.push_back(query);
 				return true;
 			}
 		}

@@ -16,7 +16,7 @@ namespace ie {
 class BCIEngine : public HornIEngine {
 private:
 	std::unordered_set<std::string> m_visited;
-	std::unordered_set<std::string> m_required_facts;
+	std::vector<std::string> m_required_facts;
 
 public:
 	bool parse() override;

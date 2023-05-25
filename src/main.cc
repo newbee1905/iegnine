@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	fmt::println("NO");
-	e->result_output();
+	//e->result_output();
 
 	return 0;
 }
