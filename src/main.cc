@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	std::ifstream input_file(filename, std::ios::binary);
+	std::ifstream input_file(filename);
 	std::string kb_str;
 	std::string query_str;
 
