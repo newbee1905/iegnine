@@ -1,9 +1,10 @@
 #include "fmt/core.h"
 
-#include "BCIEngine.hh"
-#include "FCIEngine.hh"
+#include "bc_iengine.hh"
+#include "fc_iengine.hh"
 #include "fmt/ostream.h"
 #include "iengine.hh"
+#include "tt_iengine.hh"
 /* #include "inference_engine.hh" */
 
 #include <algorithm>
@@ -26,12 +27,15 @@ int main(int argc, char *argv[]) {
 	case 'B':
 		e = std::make_unique<ie::BCIEngine>();
 		break;
+	case 'T':
+		e = std::make_unique<ie::TTIEngine>();
+		break;
 	default:
 		fmt::println(stderr, "This method does not exist or not supported yet.");
 		return 1;
 	}
 
-	std::ifstream input_file(argv[1]);
+	std::ifstream input_file(argv[1], std::ios::binary);
 	std::string kb_str;
 	std::string query_str;
 
@@ -57,13 +61,13 @@ int main(int argc, char *argv[]) {
 	bool result = e->solve();
 
 	if (result) {
-		fmt::println("YES");
+		fmt::print("YES");
 		e->result_output();
 		return 0;
 	}
 
-	fmt::println("NO");
-	e->result_output();
+	fmt::print("NO");
+	/* e->result_output(); */
 
 	return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef IENGINE_HH
 #define IENGINE_HH
 
+#include <chrono>
 #include <functional>
 #include <regex>
 #include <string>
@@ -18,7 +19,6 @@ const std::regex HORN_REGEX("(&|;|=>)|\\w+");
 class IEngine {
 protected:
 	std::string m_kb_str, m_query_str;
-	std::unordered_map<std::string, std::vector<std::string>> m_kb;
 	std::unordered_set<std::string> m_inferred_facts;
 
 public:
@@ -36,7 +36,11 @@ public:
 	virtual void result_output()    = 0;
 };
 
-class HornIEngine : public IEngine {};
+class HornIEngine : public IEngine {
+protected:
+	std::unordered_map<std::string, std::vector<std::string>> m_kb;
+};
+
 } // namespace ie
 
 #endif // IENGINE_HH

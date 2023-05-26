@@ -1,14 +1,6 @@
 #ifndef FC_IENGINE_HH
 #define FC_IENGINE_HH
 
-#include <algorithm>
-#include <functional>
-#include <regex>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
-
 #include "iengine.hh"
 #include "utils.hh"
 

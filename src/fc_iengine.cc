@@ -1,15 +1,8 @@
 #include "fmt/core.h"
 
-#include "FCIEngine.hh"
 #include "enums.hh"
-
-#include <fstream>
-#include <sstream>
-#include <stack>
-#include <stdexcept>
-#include <string>
-#include <unordered_set>
-#include <vector>
+#include "fc_iengine.hh"
+#include "fmt/format.h"
 
 namespace ie {
 bool FCIEngine::solve() {
@@ -54,8 +47,23 @@ bool FCIEngine::parse() {
 
 bool FCIEngine::entailment_check() {
 	bool new_fact_inferred = false;
+	for (auto &[right_side, left_side] : m_kb) {
+		// if leftside is cleared, skip this sentence
+		if (left_side.empty())
+			continue;
+
+		fmt::println("Right: {}", right_side);
+		fmt::println("Left: {}", fmt::join(left_side, ","));
+		fmt::println("++++++++++++++++++++++++");
+	}
 	while (true) {
 		// is the m_query_str already a fact?
+		/* fmt::println("------------------------------"); */
+		/* for (const auto &val : m_inferred_facts) { */
+		/* 	fmt::print("{}, ", val); */
+		/* } */
+		/* fmt::println("\n{}", m_query_str); */
+
 		if (m_inferred_facts.find(m_query_str) != m_inferred_facts.end())
 			return true;
 
