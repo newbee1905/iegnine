@@ -1,7 +1,7 @@
 #include "fmt/core.h"
 
-#include "FCIEngine.hh"
 #include "enums.hh"
+#include "fc_iengine.hh"
 
 #include <fstream>
 #include <sstream>
@@ -64,7 +64,7 @@ bool FCIEngine::entailment_check() {
 		for (const auto &cur_fact : m_inferred_facts) {
 			// check each sentence with same right side in m_kb
 			for (auto &[right_side, left_sides] : m_kb) {
-				//check each left side of those sentences
+				// check each left side of those sentences
 				for (auto &left_side : left_sides) {
 					// if leftside is cleared, skip this sentence
 					if (left_side.empty())

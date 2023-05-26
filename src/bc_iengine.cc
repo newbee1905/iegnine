@@ -1,6 +1,6 @@
 #include "fmt/core.h"
 
-#include "BCIEngine.hh"
+#include "bc_iengine.hh"
 #include "enums.hh"
 
 #include <fstream>
@@ -79,7 +79,7 @@ bool BCIEngine::_entailment_check(std::string query) {
 		if (query == right_side) {
 			bool is_left_side = false;
 
-			//check each leftsides
+			// check each leftsides
 			for (const auto &left_side : left_sides) {
 				is_left_side = false;
 
@@ -87,7 +87,7 @@ bool BCIEngine::_entailment_check(std::string query) {
 				for (const auto &symbol : left_side) {
 					// if true, keep going until last symbol/premise
 					// if just one symbol/premise is false, mark as false
-					//and skip this leftside(sentence)
+					// and skip this leftside(sentence)
 					if (_entailment_check(symbol)) {
 						is_left_side = true;
 					} else {
@@ -96,8 +96,8 @@ bool BCIEngine::_entailment_check(std::string query) {
 					}
 				}
 
-				//if just one left side is proven, this current right side will be a fact
-				//break the loop since already proven, no need to keep searching
+				// if just one left side is proven, this current right side will be a fact
+				// break the loop since already proven, no need to keep searching
 				if (is_left_side) {
 					break;
 				}

@@ -1,9 +1,10 @@
 #include "fmt/core.h"
 
-#include "BCIEngine.hh"
-#include "FCIEngine.hh"
+#include "bc_iengine.hh"
+#include "fc_iengine.hh"
 #include "fmt/ostream.h"
 #include "iengine.hh"
+#include "tt_iengine.hh"
 /* #include "inference_engine.hh" */
 
 #include <algorithm>
@@ -22,18 +23,21 @@ int main(int argc, char *argv[]) {
 	switch (argv[1][0]) {
 	case 'F':
 		e = std::make_unique<ie::FCIEngine>();
-		fmt::println("FC:");
+		/* fmt::println("FC:"); */
 		break;
 	case 'B':
 		e = std::make_unique<ie::BCIEngine>();
-		fmt::println("BC:");
+		/* fmt::println("BC:"); */
+		break;
+	case 'T':
+		e = std::make_unique<ie::TTIEngine>();
 		break;
 	default:
 		fmt::println(stderr, "This method does not exist or not supported yet.");
 		return 1;
 	}
 
-	std::ifstream input_file(argv[2]);
+	std::ifstream input_file(argv[2], std::ios::binary);
 	std::string kb_str;
 	std::string query_str;
 
@@ -43,7 +47,7 @@ int main(int argc, char *argv[]) {
 			mode++;
 			continue;
 		}
-		fmt::println("{}", line);
+		/* fmt::println("{}", line); */
 		switch (mode) {
 		case 1:
 			e->kb_str() = line;
@@ -59,13 +63,13 @@ int main(int argc, char *argv[]) {
 	bool result = e->solve();
 
 	if (result) {
-		fmt::println("YES");
+		fmt::print("YES: ");
 		e->result_output();
 		return 0;
 	}
 
 	fmt::println("NO");
-	//e->result_output();
+	// e->result_output();
 
 	return 0;
 }
