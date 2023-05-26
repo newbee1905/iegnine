@@ -1,4 +1,4 @@
 TELL
-~p2; p3 & p2; ~p3 & p4; ~(p1 & p5);
+c=>q;l&b=>c;b&l=>m;a&b=>l;a&p=>l;g&h&i&k=>l;c=>l;a;b;
 ASK
-p
+q
