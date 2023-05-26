@@ -18,11 +18,11 @@ struct Clause {
 	static std::unordered_map<std::string, std::shared_ptr<Clause>> Clauses;
 	static std::unordered_set<std::string> Literals;
 	static std::unordered_map<std::string, int> TruthTable;
-	static std::shared_ptr<Clause> Negation(std::shared_ptr<Clause> left);
+	static std::shared_ptr<Clause> Negation(std::shared_ptr<Clause> left, bool optimal_cnf);
 	static std::shared_ptr<Clause> Disjunction(std::shared_ptr<Clause> left,
-	                                           std::shared_ptr<Clause> right);
+	                                           std::shared_ptr<Clause> right, bool optimal_cnf);
 	static std::shared_ptr<Clause> Conjunction(std::shared_ptr<Clause> left,
-	                                           std::shared_ptr<Clause> right);
+	                                           std::shared_ptr<Clause> right, bool optimal_cnf);
 };
 }; // namespace ie
 

@@ -83,14 +83,14 @@ void TTIEngine::_cnf(std::shared_ptr<Clause> &out, const std::vector<std::string
 			cur_left = cur_literals.top();
 			cur_literals.pop();
 
-			cur_literals.push(Clause::Conjunction(cur_left, cur_right));
+			cur_literals.push(Clause::Conjunction(cur_left, cur_right, optimal_cnf));
 		} else if (is_operator(token[0])) {
 			switch (token[0]) {
 			case '~':
 				cur_left = cur_literals.top();
 				cur_literals.pop();
 
-				cur_literals.push(Clause::Negation(cur_left));
+				cur_literals.push(Clause::Negation(cur_left, optimal_cnf));
 				break;
 			case '&':
 				cur_right = cur_literals.top();
@@ -98,7 +98,7 @@ void TTIEngine::_cnf(std::shared_ptr<Clause> &out, const std::vector<std::string
 				cur_left = cur_literals.top();
 				cur_literals.pop();
 
-				cur_literals.push(Clause::Conjunction(cur_left, cur_right));
+				cur_literals.push(Clause::Conjunction(cur_left, cur_right, optimal_cnf));
 				break;
 			case '|':
 				cur_right = cur_literals.top();
@@ -106,7 +106,7 @@ void TTIEngine::_cnf(std::shared_ptr<Clause> &out, const std::vector<std::string
 				cur_left = cur_literals.top();
 				cur_literals.pop();
 
-				cur_literals.push(Clause::Disjunction(cur_left, cur_right));
+				cur_literals.push(Clause::Disjunction(cur_left, cur_right, optimal_cnf));
 				break;
 			case '=':
 				cur_right = cur_literals.top();
@@ -114,9 +114,9 @@ void TTIEngine::_cnf(std::shared_ptr<Clause> &out, const std::vector<std::string
 				cur_left = cur_literals.top();
 				cur_literals.pop();
 
-				cur_left = Clause::Negation(cur_left);
+				cur_left = Clause::Negation(cur_left, optimal_cnf);
 
-				cur_literals.push(Clause::Disjunction(cur_left, cur_right));
+				cur_literals.push(Clause::Disjunction(cur_left, cur_right, optimal_cnf));
 				break;
 			case '<':
 				cur_right = cur_literals.top();
@@ -124,13 +124,13 @@ void TTIEngine::_cnf(std::shared_ptr<Clause> &out, const std::vector<std::string
 				cur_left = cur_literals.top();
 				cur_literals.pop();
 
-				auto neg_cur_left  = Clause::Negation(cur_left);
-				auto neg_cur_right = Clause::Negation(cur_right);
+				auto neg_cur_left  = Clause::Negation(cur_left, optimal_cnf);
+				auto neg_cur_right = Clause::Negation(cur_right, optimal_cnf);
 
-				cur_left  = Clause::Conjunction(cur_left, cur_right);
-				cur_right = Clause::Conjunction(neg_cur_left, neg_cur_right);
+				cur_left  = Clause::Conjunction(cur_left, cur_right, optimal_cnf);
+				cur_right = Clause::Conjunction(neg_cur_left, neg_cur_right, optimal_cnf);
 
-				cur_literals.push(Clause::Disjunction(cur_left, cur_right));
+				cur_literals.push(Clause::Disjunction(cur_left, cur_right, optimal_cnf));
 				break;
 			}
 
@@ -209,13 +209,15 @@ bool TTIEngine::parse() {
 	_cnf(m_kb_clause, m_kb_tokens);
 	_cnf(m_query_clause, m_query_tokens);
 
-	/* fmt::println("KB: {}", m_kb_clause->token); */
+	fmt::println("KB: {}", m_kb_clause->token);
 	/* fmt::println("Query: {}", m_query_clause->token); */
 
-	/* while (_dpll(m_kb_clause)) */
-	/* 	; */
-	/* while (_dpll(m_query_clause)) */
-	/* 	; */
+	if (dpll) {
+		while (_dpll(m_kb_clause))
+			;
+		while (_dpll(m_query_clause))
+			;
+	}
 
 	/* std::stack<std::shared_ptr<Clause>> s; */
 	/* s.push(m_query_clause); */

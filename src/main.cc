@@ -18,9 +18,23 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	std::unique_ptr<ie::IEngine> e = nullptr;
+	++argv;
 
-	switch (argv[1][0]) {
+	std::string algo     = *argv++;
+	std::string filename = *argv++;
+
+	std::unique_ptr<ie::IEngine> e = nullptr;
+	bool optimal_cnf               = false;
+	bool dpll                      = false;
+
+	for (; *argv; ++argv) {
+		if (std::string(*argv) == "--cnf")
+			optimal_cnf = true;
+		else if (std::string(*argv) == "--dpll")
+			dpll = true;
+	}
+
+	switch (algo[0]) {
 	case 'F':
 		e = std::make_unique<ie::FCIEngine>();
 		/* fmt::println("FC:"); */
@@ -30,14 +44,14 @@ int main(int argc, char *argv[]) {
 		/* fmt::println("BC:"); */
 		break;
 	case 'T':
-		e = std::make_unique<ie::TTIEngine>();
+		e = std::make_unique<ie::TTIEngine>(optimal_cnf, dpll);
 		break;
 	default:
 		fmt::println(stderr, "This method does not exist or not supported yet.");
 		return 1;
 	}
 
-	std::ifstream input_file(argv[2], std::ios::binary);
+	std::ifstream input_file(filename, std::ios::binary);
 	std::string kb_str;
 	std::string query_str;
 

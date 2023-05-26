@@ -20,9 +20,12 @@ private:
 	std::vector<std::string> m_query_tokens;
 	std::shared_ptr<Clause> m_kb_clause;
 	std::shared_ptr<Clause> m_query_clause;
-	int m_count = 0;
+	int m_count      = 0;
+	bool optimal_cnf = false;
+	bool dpll        = false;
 
 public: // setter + getter
+	TTIEngine(bool optimal_cnf, bool dpll) : optimal_cnf(optimal_cnf), dpll(dpll) {}
 	std::vector<std::string> &kb_tokens() { return m_kb_tokens; }
 	std::vector<std::string> &query_tokens() { return m_query_tokens; }
 
