@@ -13,13 +13,13 @@
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		std::cout << "Usage: ./inference_engine <filename> <mode>\n";
+		std::cout << "Usage: ./inference_engine <mode> <filename>\n";
 		return 1;
 	}
 
 	std::unique_ptr<ie::IEngine> e = nullptr;
 
-	switch (argv[2][0]) {
+	switch (argv[1][0]) {
 	case 'F':
 		e = std::make_unique<ie::FCIEngine>();
 		fmt::println("FC:");
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	std::ifstream input_file(argv[1]);
+	std::ifstream input_file(argv[2]);
 	std::string kb_str;
 	std::string query_str;
 
