@@ -14,18 +14,20 @@
 
 int main(int argc, char *argv[]) {
 	if (argc < 3) {
-		std::cout << "Usage: ./inference_engine <filename> <mode>\n";
+		std::cout << "Usage: ./inference_engine <mode> <filename>\n";
 		return 1;
 	}
 
 	std::unique_ptr<ie::IEngine> e = nullptr;
 
-	switch (argv[2][0]) {
+	switch (argv[1][0]) {
 	case 'F':
 		e = std::make_unique<ie::FCIEngine>();
+		/* fmt::println("FC:"); */
 		break;
 	case 'B':
 		e = std::make_unique<ie::BCIEngine>();
+		/* fmt::println("BC:"); */
 		break;
 	case 'T':
 		e = std::make_unique<ie::TTIEngine>();
@@ -35,7 +37,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	std::ifstream input_file(argv[1], std::ios::binary);
+	std::ifstream input_file(argv[2], std::ios::binary);
 	std::string kb_str;
 	std::string query_str;
 
@@ -45,7 +47,7 @@ int main(int argc, char *argv[]) {
 			mode++;
 			continue;
 		}
-		fmt::println("{}", line);
+		/* fmt::println("{}", line); */
 		switch (mode) {
 		case 1:
 			e->kb_str() = line;
@@ -61,13 +63,13 @@ int main(int argc, char *argv[]) {
 	bool result = e->solve();
 
 	if (result) {
-		fmt::print("YES");
+		fmt::print("YES: ");
 		e->result_output();
 		return 0;
 	}
 
-	fmt::print("NO");
-	/* e->result_output(); */
+	fmt::println("NO");
+	// e->result_output();
 
 	return 0;
 }

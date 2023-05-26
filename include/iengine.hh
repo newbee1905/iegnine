@@ -19,7 +19,7 @@ const std::regex HORN_REGEX("(&|;|=>)|\\w+");
 class IEngine {
 protected:
 	std::string m_kb_str, m_query_str;
-	std::unordered_set<std::string> m_inferred_facts;
+	std::vector<std::string> m_inferred_facts;
 
 public:
 	IEngine() {}
@@ -38,7 +38,7 @@ public:
 
 class HornIEngine : public IEngine {
 protected:
-	std::unordered_map<std::string, std::vector<std::string>> m_kb;
+	std::unordered_map<std::string, std::vector<std::vector<std::string>>> m_kb;
 };
 
 } // namespace ie

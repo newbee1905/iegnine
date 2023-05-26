@@ -2,7 +2,14 @@
 
 #include "enums.hh"
 #include "fc_iengine.hh"
-#include "fmt/format.h"
+
+#include <fstream>
+#include <sstream>
+#include <stack>
+#include <stdexcept>
+#include <string>
+#include <unordered_set>
+#include <vector>
 
 namespace ie {
 bool FCIEngine::solve() {
@@ -28,13 +35,13 @@ bool FCIEngine::parse() {
 			break;
 		case ';':
 			if ((literals.size() + mode) == 1)
-				m_inferred_facts.insert(literals[0]);
+				m_inferred_facts.push_back(literals[0]);
 			literals.clear();
 			mode = 0;
 			break;
 		default:
 			if (mode)
-				m_kb[token] = literals;
+				m_kb[token].push_back(literals);
 			else
 				literals.push_back(token);
 			break;
@@ -47,52 +54,44 @@ bool FCIEngine::parse() {
 
 bool FCIEngine::entailment_check() {
 	bool new_fact_inferred = false;
-	for (auto &[right_side, left_side] : m_kb) {
-		// if leftside is cleared, skip this sentence
-		if (left_side.empty())
-			continue;
-
-		fmt::println("Right: {}", right_side);
-		fmt::println("Left: {}", fmt::join(left_side, ","));
-		fmt::println("++++++++++++++++++++++++");
-	}
 	while (true) {
 		// is the m_query_str already a fact?
-		/* fmt::println("------------------------------"); */
-		/* for (const auto &val : m_inferred_facts) { */
-		/* 	fmt::print("{}, ", val); */
-		/* } */
-		/* fmt::println("\n{}", m_query_str); */
-
-		if (m_inferred_facts.find(m_query_str) != m_inferred_facts.end())
+		if (std::find(m_inferred_facts.begin(), m_inferred_facts.end(), m_query_str) !=
+		    m_inferred_facts.end())
 			return true;
 
 		// checking each fact in the fact queue
 		for (const auto &cur_fact : m_inferred_facts) {
-			// check each sentence in m_kb
-			for (auto &[right_side, left_side] : m_kb) {
-				// if leftside is cleared, skip this sentence
-				if (left_side.empty())
-					continue;
+			// check each sentence with same right side in m_kb
+			for (auto &[right_side, left_sides] : m_kb) {
+				// check each left side of those sentences
+				for (auto &left_side : left_sides) {
+					// if leftside is cleared, skip this sentence
+					if (left_side.empty())
+						continue;
 
-				// find current fact symbol in the left side
-				auto it = std::find(left_side.begin(), left_side.end(), cur_fact);
-				// if found, erase from left side to keep track of undetermined symbols
-				if (it != left_side.end())
-					left_side.erase(it);
+					// find current fact symbol in the left side
+					auto it = std::find(left_side.begin(), left_side.end(), cur_fact);
+					// if found, erase from left side to keep track of undetermined symbols
+					if (it != left_side.end())
+						left_side.erase(it);
 
-				// if leftside is cleared, add right side to fact queue
-				if (left_side.size() > 0) {
-					continue;
+					// if leftside is cleared, add right side to fact queue
+					if (left_side.size() > 0) {
+						continue;
+					}
+
+					// only add new inferred fact if it is actually new
+					// (not already in list of inferred facts)
+					new_fact_inferred = (std::find(m_inferred_facts.begin(), m_inferred_facts.end(),
+					                               right_side) == m_inferred_facts.end());
+					if (new_fact_inferred) {
+						m_inferred_facts.push_back(right_side);
+						break;
+					}
 				}
-
-				// only add new inferred fact if it is actually new
-				// (not already in list of inferred facts)
-				new_fact_inferred = (m_inferred_facts.find(right_side) == m_inferred_facts.end());
-				if (new_fact_inferred) {
-					m_inferred_facts.insert(right_side);
+				if (new_fact_inferred)
 					break;
-				}
 			}
 			if (new_fact_inferred)
 				break;
